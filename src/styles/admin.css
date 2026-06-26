@@ -1,0 +1,72 @@
+/* Black & Yellow Theme Variables */
+:root {
+  --primary-black: #0a0a0a;
+  --secondary-black: #1a1a1a;
+  --dark-gray: #2a2a2a;
+  --medium-gray: #3a3a3a;
+  --light-gray: #4a4a4a;
+  --yellow-primary: #FFD700;
+  --yellow-dark: #F0C000;
+  --yellow-light: #FFE44D;
+  --yellow-glow: rgba(255, 215, 0, 0.2);
+  --text-white: #ffffff;
+  --text-gray: #b0b0b0;
+  --text-dark: #888888;
+}
+
+/* Global Styles */
+body {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFD700;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #F0C000;
+}
+
+/* Selection Color */
+::selection {
+  background: #FFD700;
+  color: #0a0a0a;
+}
+
+/* Animations */
+@keyframes glow-pulse {
+  0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.1); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out;
+}
