@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { FaSave, FaUser, FaLock, FaBell, FaPalette } from 'react-icons/fa';
+import { useAuth } from '../../../context/AuthContext';
+import { 
+  FaSave, 
+  FaUser, 
+  FaLock, 
+  FaBell, 
+  FaPalette,
+  FaEnvelope,
+  FaPhone,
+  FaEye,
+  FaEyeSlash,
+  FaShieldAlt,
+  FaCheckCircle,
+  FaTimes,
+  FaUserCircle
+} from 'react-icons/fa';
 
 const AdminSettings = () => {
+  const { user, updateUser } = useAuth(); // Add updateUser from context
+  
   const [profile, setProfile] = useState({
-    name: 'John Admin',
-    email: 'admin@autoshow.com',
-    phone: '+1 (555) 123-4567'
+    name: user?.name || 'John Admin',
+    email: user?.email || 'admin@autoshow.com',
+    phone: user?.phone || '+1 (555) 123-4567'
   });
 
   const [password, setPassword] = useState({
@@ -15,162 +32,440 @@ const AdminSettings = () => {
     confirm: ''
   });
 
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
+
+  const [notifications, setNotifications] = useState({
+    email: true,
+    leads: true,
+    inventory: false,
+    testDrives: true,
+    marketing: false
+  });
+
+  const [selectedTheme, setSelectedTheme] = useState('yellow');
+  const [loading, setLoading] = useState({
+    profile: false,
+    password: false
+  });
+
+  const themes = [
+    { id: 'yellow', color: '#FFD700', label: 'Gold' },
+    { id: 'blue', color: '#3B82F6', label: 'Blue' },
+    { id: 'red', color: '#EF4444', label: 'Red' },
+    { id: 'green', color: '#10B981', label: 'Green' },
+    { id: 'purple', color: '#8B5CF6', label: 'Purple' },
+    { id: 'pink', color: '#EC4899', label: 'Pink' },
+    { id: 'orange', color: '#F59E0B', label: 'Orange' },
+    { id: 'teal', color: '#14B8A6', label: 'Teal' }
+  ];
+
   const handleProfileSubmit = (e) => {
     e.preventDefault();
-    toast.success('Profile updated successfully!');
+    setLoading({ ...loading, profile: true });
+    
+    // Update user in context
+    updateUser({
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone
+    });
+    
+    // Update localStorage
+    const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
+    localStorage.setItem('adminUser', JSON.stringify({
+      ...userData,
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone
+    }));
+    
+    setTimeout(() => {
+      toast.success('Profile updated successfully! ✅');
+      setLoading({ ...loading, profile: false });
+      // Refresh the page to update header
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    }, 1000);
   };
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
+    
     if (password.new !== password.confirm) {
-      toast.error('Passwords do not match');
+      toast.error('Passwords do not match ❌');
       return;
     }
-    toast.success('Password changed successfully!');
-    setPassword({ current: '', new: '', confirm: '' });
+    
+    if (password.new.length < 8) {
+      toast.error('Password must be at least 8 characters ❌');
+      return;
+    }
+
+    setLoading({ ...loading, password: true });
+    
+    setTimeout(() => {
+      toast.success('Password changed successfully! 🔒');
+      setPassword({ current: '', new: '', confirm: '' });
+      setLoading({ ...loading, password: false });
+    }, 1500);
+  };
+
+  const handleNotificationToggle = (key) => {
+    setNotifications({ ...notifications, [key]: !notifications[key] });
+    toast.success(`${key.charAt(0).toUpperCase() + key.slice(1)} notifications ${!notifications[key] ? 'enabled' : 'disabled'}`);
+  };
+
+  const handleThemeChange = (themeId) => {
+    setSelectedTheme(themeId);
+    toast.success(`Theme changed to ${themes.find(t => t.id === themeId)?.label}`);
+  };
+
+  // Get user initials for avatar
+  const getInitials = (name) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
   return (
-    <div>
-      <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-6">Settings</h1>
+    <div className="settings-page animate-fade-in">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Settings</h1>
+          <p className="page-subtitle">Manage your account preferences and configuration</p>
+        </div>
+        <div className="header-actions">
+          <span className="form-status">
+            <FaShieldAlt /> Secure Settings
+          </span>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="settings-grid">
         {/* Profile Settings */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <FaUser className="mr-2 text-blue-600" /> Profile
-          </h2>
-          <form onSubmit={handleProfileSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <FaUser className="settings-icon" />
+            <h3>Profile</h3>
+          </div>
+          <form onSubmit={handleProfileSubmit} className="settings-form">
+            <div className="profile-avatar">
+              <div className="avatar-circle">
+                {getInitials(profile.name)}
+              </div>
+              <div className="avatar-info">
+                <span className="avatar-name">{profile.name}</span>
+                <span className="avatar-role">Administrator</span>
+              </div>
+              <button type="button" className="avatar-upload-btn">
+                <FaUserCircle /> Change Photo
+              </button>
+            </div>
+
+            <div className="form-group">
+              <label>
+                <FaUser className="label-icon" /> Full Name
               </label>
               <input
                 type="text"
                 value={profile.name}
                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your full name"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
+
+            <div className="form-group">
+              <label>
+                <FaEnvelope className="label-icon" /> Email
               </label>
               <input
                 type="email"
                 value={profile.email}
                 onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your email"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone
+
+            <div className="form-group">
+              <label>
+                <FaPhone className="label-icon" /> Phone
               </label>
               <input
                 type="tel"
                 value={profile.phone}
                 onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your phone number"
               />
             </div>
+
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
+              className="btn btn-primary"
+              disabled={loading.profile}
             >
-              <FaSave className="mr-2" /> Update Profile
+              <FaSave />
+              {loading.profile ? 'Updating...' : 'Update Profile'}
             </button>
           </form>
         </div>
 
-        {/* Password Settings */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <FaLock className="mr-2 text-blue-600" /> Change Password
-          </h2>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Current Password
-              </label>
-              <input
-                type="password"
-                value={password.current}
-                onChange={(e) => setPassword({ ...password, current: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
+        {/* Change Password */}
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <FaLock className="settings-icon" />
+            <h3>Change Password</h3>
+          </div>
+          <form onSubmit={handlePasswordSubmit} className="settings-form">
+            <div className="password-strength">
+              <span>Password must be at least 8 characters</span>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                New Password
-              </label>
-              <input
-                type="password"
-                value={password.new}
-                onChange={(e) => setPassword({ ...password, new: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                minLength="8"
-              />
+
+            <div className="form-group">
+              <label>Current Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword.current ? 'text' : 'password'}
+                  value={password.current}
+                  onChange={(e) => setPassword({ ...password, current: e.target.value })}
+                  placeholder="Enter current password"
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password-btn"
+                  onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
+                >
+                  {showPassword.current ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                value={password.confirm}
-                onChange={(e) => setPassword({ ...password, confirm: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
+
+            <div className="form-group">
+              <label>New Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword.new ? 'text' : 'password'}
+                  value={password.new}
+                  onChange={(e) => setPassword({ ...password, new: e.target.value })}
+                  placeholder="Enter new password"
+                  required
+                  minLength="8"
+                />
+                <button
+                  type="button"
+                  className="toggle-password-btn"
+                  onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
+                >
+                  {showPassword.new ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
+
+            <div className="form-group">
+              <label>Confirm New Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword.confirm ? 'text' : 'password'}
+                  value={password.confirm}
+                  onChange={(e) => setPassword({ ...password, confirm: e.target.value })}
+                  placeholder="Confirm new password"
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password-btn"
+                  onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
+                >
+                  {showPassword.confirm ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {password.new && password.confirm && password.new !== password.confirm && (
+                <div className="password-error">
+                  <FaTimes /> Passwords do not match
+                </div>
+              )}
+              {password.new && password.new.length >= 8 && password.confirm && password.new === password.confirm && (
+                <div className="password-success">
+                  <FaCheckCircle /> Passwords match
+                </div>
+              )}
+            </div>
+
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
+              className="btn btn-primary"
+              disabled={loading.password}
             >
-              <FaLock className="mr-2" /> Change Password
+              <FaLock />
+              {loading.password ? 'Changing...' : 'Change Password'}
             </button>
           </form>
         </div>
 
-        {/* Notification Settings */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <FaBell className="mr-2 text-blue-600" /> Notifications
-          </h2>
-          <div className="space-y-4">
-            <label className="flex items-center justify-between">
-              <span className="text-gray-700">Email notifications</span>
-              <input type="checkbox" defaultChecked className="w-5 h-5 text-blue-600" />
-            </label>
-            <label className="flex items-center justify-between">
-              <span className="text-gray-700">New lead alerts</span>
-              <input type="checkbox" defaultChecked className="w-5 h-5 text-blue-600" />
-            </label>
-            <label className="flex items-center justify-between">
-              <span className="text-gray-700">Inventory updates</span>
-              <input type="checkbox" className="w-5 h-5 text-blue-600" />
-            </label>
+        {/* Notifications */}
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <FaBell className="settings-icon" />
+            <h3>Notifications</h3>
+          </div>
+          <div className="settings-form">
+            <div className="notification-item">
+              <div className="notification-info">
+                <div className="notification-icon">
+                  <FaEnvelope />
+                </div>
+                <div className="notification-details">
+                  <span className="notification-title">Email notifications</span>
+                  <span className="notification-desc">Receive updates via email</span>
+                </div>
+              </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={notifications.email}
+                  onChange={() => handleNotificationToggle('email')}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div className="notification-item">
+              <div className="notification-info">
+                <div className="notification-icon">
+                  <FaUser />
+                </div>
+                <div className="notification-details">
+                  <span className="notification-title">New lead alerts</span>
+                  <span className="notification-desc">Get notified when a new lead arrives</span>
+                </div>
+              </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={notifications.leads}
+                  onChange={() => handleNotificationToggle('leads')}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div className="notification-item">
+              <div className="notification-info">
+                <div className="notification-icon">
+                  <FaBell />
+                </div>
+                <div className="notification-details">
+                  <span className="notification-title">Inventory updates</span>
+                  <span className="notification-desc">Get notified about inventory changes</span>
+                </div>
+              </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={notifications.inventory}
+                  onChange={() => handleNotificationToggle('inventory')}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div className="notification-item">
+              <div className="notification-info">
+                <div className="notification-icon">
+                  <FaShieldAlt />
+                </div>
+                <div className="notification-details">
+                  <span className="notification-title">Test drive reminders</span>
+                  <span className="notification-desc">Get reminded of upcoming test drives</span>
+                </div>
+              </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={notifications.testDrives}
+                  onChange={() => handleNotificationToggle('testDrives')}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div className="notification-item">
+              <div className="notification-info">
+                <div className="notification-icon">
+                  <FaBell />
+                </div>
+                <div className="notification-details">
+                  <span className="notification-title">Marketing updates</span>
+                  <span className="notification-desc">Receive marketing and promotional emails</span>
+                </div>
+              </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={notifications.marketing}
+                  onChange={() => handleNotificationToggle('marketing')}
+                />
+                <span className="toggle-slider"></span>
+              </label>
+            </div>
           </div>
         </div>
 
         {/* Theme Settings */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <FaPalette className="mr-2 text-blue-600" /> Theme
-          </h2>
-          <div className="space-y-4">
-            <div className="grid grid-cols-4 gap-2">
-              {['blue', 'red', 'green', 'purple', 'pink', 'orange', 'teal', 'indigo'].map((color) => (
+        <div className="settings-card">
+          <div className="settings-card-header">
+            <FaPalette className="settings-icon" />
+            <h3>Theme</h3>
+          </div>
+          <div className="settings-form">
+            <div className="theme-info">
+              <p>Choose your preferred color theme for the admin panel</p>
+              <span className="active-theme">
+                Active: <strong>{themes.find(t => t.id === selectedTheme)?.label}</strong>
+              </span>
+            </div>
+            
+            <div className="theme-grid">
+              {themes.map((theme) => (
                 <button
-                  key={color}
-                  className={`w-full aspect-square rounded-lg border-2 border-transparent hover:border-blue-500`}
-                  style={{ backgroundColor: `var(--color-${color})` }}
-                  onClick={() => toast.info(`Theme changed to ${color}`)}
-                />
+                  key={theme.id}
+                  className={`theme-option ${selectedTheme === theme.id ? 'active' : ''}`}
+                  onClick={() => handleThemeChange(theme.id)}
+                  style={{ 
+                    '--theme-color': theme.color,
+                    background: theme.color
+                  }}
+                >
+                  <div className="theme-preview" style={{ background: theme.color }}>
+                    {selectedTheme === theme.id && <FaCheckCircle className="theme-check" />}
+                  </div>
+                  <span className="theme-label">{theme.label}</span>
+                </button>
               ))}
+            </div>
+
+            <div className="theme-preview-card">
+              <div className="preview-header" style={{ 
+                background: selectedTheme === 'yellow' ? '#0a0a0a' : '#1a1a1a',
+                borderColor: themes.find(t => t.id === selectedTheme)?.color 
+              }}>
+                <span>Preview</span>
+                <span className="preview-badge" style={{ 
+                  background: themes.find(t => t.id === selectedTheme)?.color,
+                  color: selectedTheme === 'yellow' ? '#0a0a0a' : '#ffffff'
+                }}>Theme</span>
+              </div>
+              <div className="preview-body">
+                <div className="preview-card" style={{ borderColor: themes.find(t => t.id === selectedTheme)?.color }}>
+                  <div className="preview-title" style={{ color: themes.find(t => t.id === selectedTheme)?.color }}>
+                    Sample Card
+                  </div>
+                  <div className="preview-text">This is how your theme will look</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -28,8 +28,9 @@ export const AuthProvider = ({ children }) => {
             id: 1,
             name: 'John Admin',
             email: 'admin@autoshow.com',
+            phone: '+1 (555) 123-4567',
             role: 'super_admin',
-            avatar: 'https://ui-avatars.com/api/?name=John+Admin&background=2563EB&color=fff'
+            avatar: 'https://ui-avatars.com/api/?name=John+Admin&background=FFD700&color=000&size=36'
           };
           
           localStorage.setItem('adminToken', 'fake-jwt-token');
@@ -49,10 +50,19 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Add updateUser function
+  const updateUser = (updatedData) => {
+    const currentUser = user || JSON.parse(localStorage.getItem('adminUser') || '{}');
+    const newUserData = { ...currentUser, ...updatedData };
+    setUser(newUserData);
+    localStorage.setItem('adminUser', JSON.stringify(newUserData));
+  };
+
   const value = {
     user,
     login,
     logout,
+    updateUser, // Add this to the context value
     loading,
     isAuthenticated: !!user
   };

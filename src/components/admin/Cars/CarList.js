@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlus, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaEye, FaSearch, FaFilter, FaCar } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CarFilters from './CarFilters';
 import CarTableRow from './CarTableRow';
@@ -10,11 +10,11 @@ import LoadingSpinner from '../../common/LoadingSpinner';
 const CarList = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ status: '', make: '' });
+  const [filters, setFilters] = useState({ status: '', make: '', search: '' });
   const [deleteDialog, setDeleteDialog] = useState({ open: false, carId: null });
 
   useEffect(() => {
-    // Simulate API call
+    // Simulate API call with sample data
     setTimeout(() => {
       setCars([
         {
@@ -27,8 +27,9 @@ const CarList = () => {
           status: 'Available',
           fuelType: 'Petrol',
           transmission: 'Automatic',
-          images: ['https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=100'],
-          createdAt: '2026-06-26'
+          images: ['https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=100&h=100&fit=crop'],
+          createdAt: '2026-06-26',
+          description: 'Low mileage, full service history.'
         },
         {
           id: 2,
@@ -40,8 +41,51 @@ const CarList = () => {
           status: 'Sold',
           fuelType: 'Diesel',
           transmission: 'Automatic',
-          images: ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=100'],
-          createdAt: '2026-06-25'
+          images: ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=100&h=100&fit=crop'],
+          createdAt: '2026-06-25',
+          description: 'Luxury SUV with premium package.'
+        },
+        {
+          id: 3,
+          make: 'Mercedes',
+          model: 'E-Class',
+          year: 2023,
+          price: 68900,
+          mileage: 8000,
+          status: 'Reserved',
+          fuelType: 'Petrol',
+          transmission: 'Automatic',
+          images: ['https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=100&h=100&fit=crop'],
+          createdAt: '2026-06-24',
+          description: 'Executive luxury sedan.'
+        },
+        {
+          id: 4,
+          make: 'Audi',
+          model: 'Q7',
+          year: 2023,
+          price: 72900,
+          mileage: 5000,
+          status: 'Available',
+          fuelType: 'Diesel',
+          transmission: 'Automatic',
+          images: ['https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=100&h=100&fit=crop'],
+          createdAt: '2026-06-23',
+          description: 'Premium SUV with advanced features.'
+        },
+        {
+          id: 5,
+          make: 'Honda',
+          model: 'Civic',
+          year: 2023,
+          price: 28500,
+          mileage: 10000,
+          status: 'Available',
+          fuelType: 'Petrol',
+          transmission: 'CVT',
+          images: ['https://images.unsplash.com/photo-1590362891991-f776e747a588?w=100&h=100&fit=crop'],
+          createdAt: '2026-06-22',
+          description: 'Sporty and efficient compact sedan.'
         }
       ]);
       setLoading(false);
@@ -54,12 +98,20 @@ const CarList = () => {
 
   const confirmDelete = () => {
     setCars(cars.filter(car => car.id !== deleteDialog.carId));
-    toast.success('Car deleted successfully');
+    toast.success('Car deleted successfully! 🗑️');
     setDeleteDialog({ open: false, carId: null });
   };
 
   const filteredCars = cars.filter(car => {
+    // Search filter
+    if (filters.search) {
+      const searchTerm = filters.search.toLowerCase();
+      const carString = `${car.make} ${car.model} ${car.year}`.toLowerCase();
+      if (!carString.includes(searchTerm)) return false;
+    }
+    // Status filter
     if (filters.status && car.status !== filters.status) return false;
+    // Make filter
     if (filters.make && car.make !== filters.make) return false;
     return true;
   });
@@ -67,59 +119,82 @@ const CarList = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">Cars</h1>
-        <Link
-          to="/admin/cars/new"
-          className="mt-3 sm:mt-0 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center"
-        >
-          <FaPlus className="mr-2" /> Add New Car
+    <div className="animate-fade-in">
+      {/* Header */}
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Cars</h1>
+          <p className="page-subtitle">Manage your vehicle inventory</p>
+        </div>
+        <Link to="/admin/cars/new" className="btn btn-primary">
+          <FaPlus /> Add New Car
         </Link>
       </div>
 
+      {/* Filters */}
       <CarFilters filters={filters} setFilters={setFilters} />
       
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Car
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Details
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredCars.map((car) => (
+      {/* Stats Summary */}
+      <div className="stats-summary">
+        <div className="stat-item">
+          <span className="stat-label">Total</span>
+          <span className="stat-value">{filteredCars.length}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Available</span>
+          <span className="stat-value" style={{ color: '#4CAF50' }}>
+            {filteredCars.filter(c => c.status === 'Available').length}
+          </span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Reserved</span>
+          <span className="stat-value" style={{ color: '#FFA726' }}>
+            {filteredCars.filter(c => c.status === 'Reserved').length}
+          </span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Sold</span>
+          <span className="stat-value" style={{ color: '#EF5350' }}>
+            {filteredCars.filter(c => c.status === 'Sold').length}
+          </span>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Car</th>
+              <th>Details</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredCars.length > 0 ? (
+              filteredCars.map((car) => (
                 <CarTableRow 
                   key={car.id} 
                   car={car} 
                   onDelete={handleDelete}
                 />
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {filteredCars.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No cars found matching your filters
-          </div>
-        )}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="empty-state">
+                  <FaCar className="empty-icon" />
+                  <div className="empty-title">No cars found</div>
+                  <div className="empty-subtitle">Try adjusting your filters or add a new car</div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
+      {/* Confirm Dialog */}
       <ConfirmDialog
         open={deleteDialog.open}
         onClose={() => setDeleteDialog({ open: false, carId: null })}

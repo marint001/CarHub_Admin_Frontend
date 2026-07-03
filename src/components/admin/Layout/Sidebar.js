@@ -7,7 +7,8 @@ import {
   FaCog,
   FaSignOutAlt,
   FaEnvelope,
-  FaChartLine
+  FaChartLine,
+  FaShieldAlt
 } from 'react-icons/fa';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -15,7 +16,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { logout } = useAuth();
 
   const menuItems = [
-    { path: '/admin/dashboard', icon: <FaTachometerAlt />, label: 'Dashboard' },
+    { path: '/admin/dashboard', icon: <FaTachometerAlt />, label: 'Dashboard', badge: 'Live' },
     { path: '/admin/cars', icon: <FaCar />, label: 'Cars' },
     { path: '/admin/leads', icon: <FaEnvelope />, label: 'Leads' },
     { path: '/admin/reports', icon: <FaChartLine />, label: 'Reports' },
@@ -24,56 +25,46 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {/* Mobile overlay */}
       {!sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          className="fixed inset-0 z-20 lg:hidden sidebar-overlay"
+          style={{ background: 'rgba(0,0,0,0.8)' }}
           onClick={() => setSidebarOpen(true)}
         />
       )}
 
-      <aside className={`
-        fixed lg:static inset-y-0 left-0 z-30
-        w-64 bg-gradient-to-b from-gray-900 to-gray-800
-        transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        flex flex-col
-      `}>
-        {/* Logo */}
-        <div className="flex items-center justify-center h-16 px-4 border-b border-gray-700">
-          <FaCar className="text-blue-500 text-2xl mr-2" />
-          <span className="text-white text-xl font-bold">AutoShow Admin</span>
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-brand">
+          <FaCar className="brand-icon" />
+          <span className="brand-text">CAR HUB</span>
+          <span className="brand-badge">Admin</span>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3">
+        <nav className="sidebar-nav">
           {menuItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
-              className={({ isActive }) => `
-                flex items-center px-4 py-3 my-1 rounded-lg transition
-                ${isActive 
-                  ? 'bg-blue-600 text-white' 
-                  : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                }
-              `}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
             >
-              <span className="text-lg mr-3">{item.icon}</span>
-              <span>{item.label}</span>
+              <span className="nav-icon">{item.icon}</span>
+              <span className="nav-label">{item.label}</span>
+              {item.badge && (
+                <span className="nav-badge">{item.badge}</span>
+              )}
             </NavLink>
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-700">
-          <button
-            onClick={logout}
-            className="flex items-center w-full px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition"
-          >
-            <FaSignOutAlt className="mr-3" />
+        <div className="sidebar-footer">
+          <button onClick={logout} className="logout-btn">
+            <FaSignOutAlt />
             <span>Logout</span>
           </button>
+          <div className="secure-badge">
+            <FaShieldAlt />
+            <span>Secure Session</span>
+          </div>
         </div>
       </aside>
     </>

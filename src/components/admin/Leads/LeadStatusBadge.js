@@ -1,20 +1,38 @@
 import React from 'react';
 
-const LeadStatusBadge = ({ status }) => {
+const LeadStatusBadge = ({ status, size = 'normal' }) => {
   const getStatusStyles = () => {
     const styles = {
-      'New': 'bg-blue-100 text-blue-800',
-      'Contacted': 'bg-yellow-100 text-yellow-800',
-      'Test Drive': 'bg-purple-100 text-purple-800',
-      'Negotiation': 'bg-orange-100 text-orange-800',
-      'Sold': 'bg-green-100 text-green-800',
-      'Closed': 'bg-gray-100 text-gray-800'
+      'New': {
+        class: 'badge-new',
+        icon: '🆕'
+      },
+      'Contacted': {
+        class: 'badge-contacted',
+        icon: '📞'
+      },
+      'Test Drive': {
+        class: 'badge-testdrive',
+        icon: '🚗'
+      },
+      'Negotiation': {
+        class: 'badge-negotiation',
+        icon: '🤝'
+      },
+      'Sold': {
+        class: 'badge-sold-lead',
+        icon: '✅'
+      }
     };
-    return styles[status] || 'bg-gray-100 text-gray-800';
+    return styles[status] || styles['New'];
   };
 
+  const style = getStatusStyles();
+  const sizeClass = size === 'large' ? 'badge-large' : '';
+
   return (
-    <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusStyles()}`}>
+    <span className={`badge ${style.class} ${sizeClass}`}>
+      <span className="badge-icon">{style.icon}</span>
       {status}
     </span>
   );

@@ -1,69 +1,79 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaEye, FaCar, FaTachometerAlt, FaGasPump } from 'react-icons/fa';
 
 const CarTableRow = ({ car, onDelete }) => {
   const getStatusColor = (status) => {
     const colors = {
-      'Available': 'bg-green-100 text-green-800',
-      'Sold': 'bg-red-100 text-red-800',
-      'Reserved': 'bg-yellow-100 text-yellow-800'
+      'Available': 'badge-available',
+      'Sold': 'badge-sold',
+      'Reserved': 'badge-reserved'
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return colors[status] || 'badge-available';
   };
 
   return (
-    <tr className="hover:bg-gray-50 transition">
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
+    <tr>
+      <td>
+        <div className="car-info">
           <img 
             src={car.images[0]} 
             alt={`${car.make} ${car.model}`}
-            className="w-16 h-16 object-cover rounded-lg"
+            className="car-thumb"
           />
-          <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900">
+          <div className="car-details">
+            <div className="car-name">
               {car.make} {car.model}
             </div>
-            <div className="text-sm text-gray-500">{car.year}</div>
+            <div className="car-year">{car.year}</div>
           </div>
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900">{car.transmission}</div>
-        <div className="text-sm text-gray-500">{car.mileage.toLocaleString()} mi</div>
-        <div className="text-sm text-gray-500">{car.fuelType}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm font-semibold text-gray-900">
-          ${car.price.toLocaleString()}
+      <td>
+        <div className="car-specs">
+          <div className="spec-item">
+            <FaCar className="spec-icon" />
+            <span>{car.transmission}</span>
+          </div>
+          <div className="spec-item">
+            <FaTachometerAlt className="spec-icon" />
+            <span>{car.mileage.toLocaleString()} mi</span>
+          </div>
+          <div className="spec-item">
+            <FaGasPump className="spec-icon" />
+            <span>{car.fuelType}</span>
+          </div>
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(car.status)}`}>
+      <td className="car-price">${car.price.toLocaleString()}</td>
+      <td>
+        <span className={`badge ${getStatusColor(car.status)}`}>
           {car.status}
         </span>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-        <div className="flex space-x-2">
+      <td>
+        <div className="action-btns">
           <Link 
             to={`/admin/cars/edit/${car.id}`}
-            className="text-blue-600 hover:text-blue-900"
+            className="action-btn edit"
+            title="Edit car"
           >
-            <FaEdit size={18} />
+            <FaEdit />
           </Link>
           <button 
             onClick={() => onDelete(car.id)}
-            className="text-red-600 hover:text-red-900"
+            className="action-btn delete"
+            title="Delete car"
           >
-            <FaTrash size={18} />
+            <FaTrash />
           </button>
           <Link 
             to={`/car/${car.id}`}
-            className="text-gray-600 hover:text-gray-900"
+            className="action-btn view"
+            title="View car"
             target="_blank"
           >
-            <FaEye size={18} />
+            <FaEye />
           </Link>
         </div>
       </td>

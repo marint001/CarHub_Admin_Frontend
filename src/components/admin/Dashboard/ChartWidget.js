@@ -1,40 +1,28 @@
 import React from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 const ChartWidget = ({ data }) => {
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
-
-  return <Bar data={data} options={options} />;
+  const maxValue = Math.max(...data.values);
+  
+  return (
+    <div className="chart-container">
+      <div className="chart-bars">
+        {data.labels.map((label, index) => {
+          const height = (data.values[index] / maxValue) * 180;
+          return (
+            <div key={index} className="chart-bar-wrapper">
+              <div 
+                className="chart-bar" 
+                style={{ height: `${Math.max(height, 8)}px` }}
+              >
+                <span className="bar-value">{data.values[index]}</span>
+              </div>
+              <span className="chart-label">{label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default ChartWidget;
