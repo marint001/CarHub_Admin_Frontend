@@ -2,7 +2,7 @@ import React from 'react';
 
 const StatsCard = ({ title, value, icon, change }) => {
   return (
-    <div className="stat-card animate-glow">
+    <div className="stat-card">
       <div className="stat-header">
         <div>
           <div className="stat-label">{title}</div>

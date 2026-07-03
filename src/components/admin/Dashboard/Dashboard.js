@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FaCar, FaUsers, FaEnvelope, FaDollarSign } from 'react-icons/fa';
 import StatsCard from './StatsCard';
 import ChartWidget from './ChartWidget';
-import RecentActivity from './RecentActivity';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -10,6 +9,11 @@ const Dashboard = () => {
     totalLeads: 128,
     totalSales: 32,
     revenue: 1245000
+  });
+
+  const [chartData, setChartData] = useState({
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    values: [12, 19, 3, 5, 2, 3, 7, 8, 12, 15, 10, 14]
   });
 
   const statCards = [
@@ -39,11 +43,6 @@ const Dashboard = () => {
     }
   ];
 
-  const chartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    values: [12, 19, 3, 5, 2, 3, 7, 8, 12, 15, 10, 14]
-  };
-
   return (
     <div className="animate-fade-in">
       <h1 className="page-title">Dashboard</h1>
@@ -55,20 +54,13 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Charts & Activity */}
-      <div className="dashboard-grid">
+      {/* Chart - Full Width */}
+      <div className="dashboard-chart-full">
         <div className="card">
           <h3 className="card-title">
             <span className="card-icon">📊</span> Monthly Sales
           </h3>
           <ChartWidget data={chartData} />
-        </div>
-        
-        <div className="card">
-          <h3 className="card-title">
-            <span className="card-icon">⚡</span> Recent Activity
-          </h3>
-          <RecentActivity />
         </div>
       </div>
     </div>

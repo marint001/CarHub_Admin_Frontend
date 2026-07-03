@@ -8,7 +8,9 @@ import {
   FaSignOutAlt,
   FaEnvelope,
   FaChartLine,
-  FaShieldAlt
+  FaShieldAlt,
+  FaBell,
+  FaTimes // Make sure FaTimes is imported
 } from 'react-icons/fa';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -16,28 +18,42 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { logout } = useAuth();
 
   const menuItems = [
-    { path: '/admin/dashboard', icon: <FaTachometerAlt />, label: 'Dashboard', badge: 'Live' },
+    { path: '/admin/dashboard', icon: <FaTachometerAlt />, label: 'Dashboard' },
     { path: '/admin/cars', icon: <FaCar />, label: 'Cars' },
     { path: '/admin/leads', icon: <FaEnvelope />, label: 'Leads' },
     { path: '/admin/reports', icon: <FaChartLine />, label: 'Reports' },
+    { path: '/admin/notifications', icon: <FaBell />, label: 'Notifications' },
     { path: '/admin/settings', icon: <FaCog />, label: 'Settings' },
   ];
 
   return (
     <>
-      {!sidebarOpen && (
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
         <div 
           className="fixed inset-0 z-20 lg:hidden sidebar-overlay"
-          style={{ background: 'rgba(0,0,0,0.8)' }}
-          onClick={() => setSidebarOpen(true)}
+          style={{ background: 'rgba(0,0,0,0.6)' }}
+          onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div className="sidebar-brand">
-          <FaCar className="brand-icon" />
-          <span className="brand-text">CAR HUB</span>
-          <span className="brand-badge">Admin</span>
+        {/* Sidebar Header with Hamburger Icon */}
+        <div className="sidebar-header">
+          <div className="sidebar-brand">
+            <FaCar className="brand-icon" />
+            <span className="brand-text">AutoShow</span>
+            <span className="brand-badge">Admin</span>
+          </div>
+          
+          {/* X Icon inside sidebar to close */}
+          <button 
+            className="sidebar-toggle-btn"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close sidebar"
+          >
+            <FaTimes />
+          </button>
         </div>
 
         <nav className="sidebar-nav">
@@ -46,12 +62,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               key={item.path}
               to={item.path}
               className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              onClick={() => {
+                // Close sidebar on mobile after navigation
+                if (window.innerWidth <= 768) {
+                  setSidebarOpen(false);
+                }
+              }}
             >
               <span className="nav-icon">{item.icon}</span>
               <span className="nav-label">{item.label}</span>
-              {item.badge && (
-                <span className="nav-badge">{item.badge}</span>
-              )}
             </NavLink>
           ))}
         </nav>

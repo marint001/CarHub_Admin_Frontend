@@ -262,7 +262,56 @@ body {
 .header-left .menu-toggle:hover {
   color: #FFD700;
 }
+/* Header - Add padding to accommodate hamburger */
+.header {
+  padding: 12px 20px 12px 76px; /* Add left padding for hamburger */
+  background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
 
+/* Hide hamburger when sidebar is open */
+.floating-hamburger.hidden {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .floating-hamburger {
+    top: 12px;
+    left: 12px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .header {
+    padding: 10px 16px 10px 64px;
+  }
+  
+  .search-box {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-hamburger {
+    top: 10px;
+    left: 10px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .header {
+    padding: 8px 12px 8px 56px;
+  }
+}
 .search-box {
   display: flex;
   align-items: center;
@@ -5496,5 +5545,247 @@ input[type="file"]::-webkit-file-upload-button:hover {
   .filter-section .filter-select {
     font-size: 13px;
     padding: 6px 10px;
+  }
+}
+
+/* ============================================
+   SIDEBAR WITH HAMBURGER INSIDE
+   ============================================ */
+   
+
+/* Sidebar Header */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-brand .brand-icon {
+  font-size: 28px;
+  color: #FFD700;
+}
+
+.sidebar-brand .brand-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #FFD700;
+}
+
+.sidebar-brand .brand-badge {
+  font-size: 10px;
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: rgba(255, 215, 0, 0.1);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+/* Sidebar Toggle Button (X icon) */
+.sidebar-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  color: #888888;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 18px;
+}
+
+.sidebar-toggle-btn:hover {
+  border-color: #EF5350;
+  color: #EF5350;
+  background: rgba(239, 83, 80, 0.05);
+}
+
+/* ============================================
+   FLOATING HAMBURGER - FIXED POSITION
+   ============================================ */
+
+/* Floating Hamburger Button - Positioned top left */
+.floating-hamburger {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #FFD700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 22px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.floating-hamburger:hover {
+  background: #2a2a2a;
+  border-color: #FFD700;
+  transform: scale(1.05);
+  box-shadow: 0 4px 30px rgba(255, 215, 0, 0.15);
+}
+
+.floating-hamburger:active {
+  transform: scale(0.95);
+}
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 260px;
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+  border-right: 1px solid #2a2a2a;
+  overflow-y: auto;
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  padding: 16px 12px;
+}
+
+.sidebar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  color: #888888;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.sidebar-nav .nav-link:hover {
+  background: rgba(255, 215, 0, 0.05);
+  color: #ffffff;
+}
+
+.sidebar-nav .nav-link.active {
+  background: #FFD700;
+  color: #0a0a0a;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+.sidebar-nav .nav-link .nav-icon {
+  font-size: 18px;
+  margin-right: 12px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-nav .nav-link .nav-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #2a2a2a;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.sidebar-footer .logout-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.sidebar-footer .logout-btn:hover {
+  background: rgba(255, 215, 0, 0.05);
+  color: #FFD700;
+}
+
+.sidebar-footer .logout-btn i {
+  margin-right: 12px;
+}
+
+.sidebar-footer .secure-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: #555555;
+}
+
+.sidebar-footer .secure-badge i {
+  color: #FFD700;
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 90;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Hide floating hamburger on mobile when sidebar is open */
+@media (max-width: 768px) {
+  .floating-hamburger {
+    display: flex;
+  }
+  
+  .sidebar-toggle-btn {
+    display: flex !important;
+  }
+}
+
+/* Show floating hamburger on desktop */
+@media (min-width: 769px) {
+  .floating-hamburger {
+    display: flex;
+  }
+  
+  .sidebar-toggle-btn {
+    display: flex !important;
+  }
+  
+  /* Remove margin from main content */
+  .main-content {
+    margin-left: 0 !important;
   }
 }
