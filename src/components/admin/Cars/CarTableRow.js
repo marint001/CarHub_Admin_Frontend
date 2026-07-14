@@ -67,11 +67,13 @@ const CarTableRow = ({ car, onDelete }) => {
           >
             <FaTrash />
           </button>
+          {/* Fix: Open in new tab or use correct path */}
           <Link 
-            to={`/car/${car.id}`}
+            to={`/admin/cars/${car.id}`}
             className="action-btn view"
-            title="View car"
+            title="View car details"
             target="_blank"
+            rel="noopener noreferrer"
           >
             <FaEye />
           </Link>
