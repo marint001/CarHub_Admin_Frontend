@@ -10,13 +10,13 @@ import Layout from './components/admin/Layout/Layout';
 import Dashboard from './components/admin/Dashboard/Dashboard';
 import CarList from './components/admin/Cars/CarList';
 import CarForm from './components/admin/Cars/CarForm';
+import CarDetail from './components/admin/Cars/CarDetail'; // Import CarDetail
 import LeadList from './components/admin/Leads/LeadList';
 import LeadDetails from './components/admin/Leads/LeadDetails';
-import Reports from './components/admin/Reports/Reports'; // ADD THIS IMPORT
+import Reports from './components/admin/Reports/Reports';
+import NotificationsPage from './components/admin/Notifications/NotificationsPage';
 import AdminSettings from './components/admin/Settings/AdminSettings';
 import ProtectedRoute from './components/common/ProtectedRoute';
-import NotificationsPage from './components/admin/Notifications/NotificationsPage';
-
 
 // Context
 import { AuthProvider } from './context/AuthContext';
@@ -39,12 +39,12 @@ function App() {
               <Route path="cars" element={<CarList />} />
               <Route path="cars/new" element={<CarForm />} />
               <Route path="cars/edit/:id" element={<CarForm />} />
+              <Route path="cars/:id" element={<CarDetail />} /> {/* Add this route */}
               <Route path="leads" element={<LeadList />} />
               <Route path="leads/:id" element={<LeadDetails />} />
-              <Route path="reports" element={<Reports />} /> {/* ADD THIS ROUTE */}
-              <Route path="settings" element={<AdminSettings />} />
+              <Route path="reports" element={<Reports />} />
               <Route path="notifications" element={<NotificationsPage />} />
-
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
             
             <Route path="*" element={<Navigate to="/admin" />} />
