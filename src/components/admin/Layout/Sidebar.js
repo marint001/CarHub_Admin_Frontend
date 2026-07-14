@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   FaCar,
@@ -9,12 +9,11 @@ import {
   FaEnvelope,
   FaChartLine,
   FaShieldAlt,
-  FaBell,
-  FaTimes // Make sure FaTimes is imported
+  FaBell
 } from 'react-icons/fa';
 import { useAuth } from '../../../context/AuthContext';
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+const Sidebar = forwardRef(({ sidebarOpen, setSidebarOpen }, ref) => {
   const { logout } = useAuth();
 
   const menuItems = [
@@ -27,67 +26,51 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   ];
 
   return (
-    <>
-      {/* Overlay for mobile */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 z-20 lg:hidden sidebar-overlay"
-          style={{ background: 'rgba(0,0,0,0.6)' }}
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+    <aside 
+      ref={ref}
+      className={`sidebar ${sidebarOpen ? 'open' : ''}`}
+    >
+      {/* Sidebar Header */}
+      <div className="sidebar-header">
+        <div className="sidebar-brand">
+          <FaCar className="brand-icon" />
+          <span className="brand-text">AutoShow</span>
+          <span className="brand-badge">Admin</span>
+        </div>
+      </div>
 
-      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-        {/* Sidebar Header with Hamburger Icon */}
-        <div className="sidebar-header">
-          <div className="sidebar-brand">
-            <FaCar className="brand-icon" />
-            <span className="brand-text">AutoShow</span>
-            <span className="brand-badge">Admin</span>
-          </div>
-          
-          {/* X Icon inside sidebar to close */}
-          <button 
-            className="sidebar-toggle-btn"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Close sidebar"
+      <nav className="sidebar-nav">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            onClick={() => {
+              if (window.innerWidth <= 768) {
+                setSidebarOpen(false);
+              }
+            }}
           >
-            <FaTimes />
-          </button>
-        </div>
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
+          </NavLink>
+        ))}
+      </nav>
 
-        <nav className="sidebar-nav">
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              onClick={() => {
-                // Close sidebar on mobile after navigation
-                if (window.innerWidth <= 768) {
-                  setSidebarOpen(false);
-                }
-              }}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="sidebar-footer">
-          <button onClick={logout} className="logout-btn">
-            <FaSignOutAlt />
-            <span>Logout</span>
-          </button>
-          <div className="secure-badge">
-            <FaShieldAlt />
-            <span>Secure Session</span>
-          </div>
+      <div className="sidebar-footer">
+        <button onClick={logout} className="logout-btn">
+          <FaSignOutAlt />
+          <span>Logout</span>
+        </button>
+        <div className="secure-badge">
+          <FaShieldAlt />
+          <span>Secure Session</span>
         </div>
-      </aside>
-    </>
+      </div>
+    </aside>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

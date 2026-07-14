@@ -232,7 +232,7 @@ body {
 
 /* Header */
 .header {
-  padding: 16px 32px;
+  padding: 16px 16px;
   background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
   border-bottom: 1px solid #2a2a2a;
   display: flex;
@@ -246,7 +246,7 @@ body {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 25px;
   flex: 1;
 }
 
@@ -309,7 +309,7 @@ body {
   }
   
   .header {
-    padding: 8px 12px 8px 56px;
+    padding: auto;
   }
 }
 .search-box {
@@ -318,7 +318,7 @@ body {
   background: #0a0a0a;
   border: 1px solid #2a2a2a;
   border-radius: 10px;
-  padding: 8px 16px;
+  padding: 8px 8px;
   transition: all 0.3s;
   max-width: 360px;
   width: 100%;
@@ -436,12 +436,12 @@ body {
 
 /* Main Content */
 .main-content {
-  margin-left: 260px;
-  min-height: 100vh;
+  margin-left: auto;
+  min-height: auto;
 }
 
 .page-content {
-  padding: 24px 32px;
+  padding: 50px 50px;
   background: #0a0a0a;
   min-height: calc(100vh - 80px);
 }
@@ -6403,4 +6403,287 @@ input[type="file"]::-webkit-file-upload-button:hover {
   .chart-header-section .chart-legend .legend-item {
     font-size: 11px;
   }
+}
+/* ============================================
+   ZOOM EFFECTS - SIDEBAR OPEN/CLOSE
+   ============================================ */
+
+.layout-container {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+/* Main Content Wrapper - With Zoom Effect */
+.main-content-wrapper {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* When sidebar is open - Zoom out and shift right */
+.main-content-wrapper.sidebar-open {
+  transform: scale(0.92) translateX(140px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.main-content-wrapper.sidebar-open .main-content-inner {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Main Content Inner */
+.main-content-inner {
+  background: #0a0a0a;
+  min-height: 100vh;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   SIDEBAR - UPDATED
+   ============================================ */
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 280px;
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+  border-right: 1px solid #2a2a2a;
+  overflow-y: auto;
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 90;
+  animation: fadeIn 0.3s ease-out;
+  display: none;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* ============================================
+   FLOATING HAMBURGER
+   ============================================ */
+
+.floating-hamburger {
+  position: fixed;
+  top: 10px;
+  left: 16px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #FFD700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 22px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.floating-hamburger:hover {
+  background: #2a2a2a;
+  border-color: #FFD700;
+  transform: scale(1.05);
+  box-shadow: 0 4px 30px rgba(255, 215, 0, 0.15);
+}
+
+.floating-hamburger:active {
+  transform: scale(0.95);
+}
+
+/* Header padding adjustment for moved hamburger */
+.header {
+  padding: 12px 20px 12px 76px;
+  background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+/* ============================================
+   ADDITIONAL ZOOM ANIMATIONS
+   ============================================ */
+
+/* Zoom in effect when sidebar closes */
+@keyframes zoomIn {
+  from {
+    transform: scale(0.92) translateX(140px);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1) translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Zoom out effect when sidebar opens */
+@keyframes zoomOut {
+  from {
+    transform: scale(1) translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.92) translateX(140px);
+    opacity: 0.8;
+  }
+}
+
+/* ============================================
+   RESPONSIVE - ZOOM EFFECTS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .floating-hamburger {
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .header {
+    padding: 10px 16px 10px 64px;
+  }
+
+  .sidebar {
+    width: 280px;
+  }
+
+  /* Smaller zoom on mobile */
+  .main-content-wrapper.sidebar-open {
+    transform: scale(0.88) translateX(60px);
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-hamburger {
+    top: 8px;
+    left: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .header {
+    padding: 8px 12px 8px 56px;
+    min-height: 48px;
+  }
+
+  .sidebar {
+    width: 260px;
+  }
+
+  /* Even smaller zoom on very small screens */
+  .main-content-wrapper.sidebar-open {
+    transform: scale(0.82) translateX(40px);
+    border-radius: 10px;
+  }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  .main-content-wrapper.sidebar-open {
+    transform: scale(0.90) translateX(160px);
+    border-radius: 20px;
+  }
+}
+
+/* ============================================
+   SIDEBAR SCROLLBAR
+   ============================================ */
+
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #FFD700;
+  border-radius: 2px;
+}
+/* ============================================
+   SIDEBAR SCROLLBAR
+   ============================================ */
+
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #FFD700;
+  border-radius: 2px;
+}
+
+/* ============================================
+   REDUCED MOTION PREFERENCE
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .main-content-wrapper,
+  .main-content-wrapper.sidebar-open,
+  .sidebar,
+  .floating-hamburger {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .main-content-wrapper.sidebar-open {
+    transform: none !important;
+  }
+}
+/* ============================================
+   SMOOTH TRANSITIONS FOR ALL ELEMENTS
+   ============================================ */
+
+.main-content-wrapper * {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-content-wrapper.sidebar-open * {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disable transitions on certain elements for performance */
+.sidebar * {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floating-hamburger * {
+  transition: none;
 }
