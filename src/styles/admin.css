@@ -107,7 +107,7 @@ body {
 .sidebar-brand {
   display: flex;
   align-items: center;
-  padding: 20px 24px;
+  padding: 16px 30px;
   border-bottom: 1px solid #2a2a2a;
   gap: 12px;
 }
@@ -404,6 +404,170 @@ body {
   margin-bottom: 24px;
 }
 
+/* ============================================
+   HEADER MENU TOGGLE
+   ============================================ */
+
+.header-menu-toggle {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  color: #888888;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.header-menu-toggle:hover {
+  border-color: #FFD700;
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.header {
+  padding: 12px 20px;
+  background: linear-gradient(90deg, #0a0a0a, #1a1a1a);
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+/* ============================================
+   FLOATING HAMBURGER - Always visible
+   ============================================ */
+
+.floating-hamburger {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFD700, #F0C000);
+  border: none;
+  color: #0a0a0a;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 24px;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+}
+
+.floating-hamburger:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 40px rgba(255, 215, 0, 0.5);
+}
+
+.floating-hamburger:active {
+  transform: scale(0.95);
+}
+
+/* ============================================
+   SIDEBAR - Always visible on desktop
+   ============================================ */
+
+/* Desktop - Sidebar always visible */
+@media (min-width: 769px) {
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  .floating-hamburger {
+    display: none !important;
+  }
+
+  .main-content-wrapper {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+
+  .main-content-wrapper.sidebar-open {
+    transform: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
+/* Mobile - Sidebar hidden by default */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: none;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+  }
+
+  .floating-hamburger {
+    display: flex !important;
+  }
+
+  .main-content-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .main-content-wrapper.sidebar-open {
+    transform: scale(0.92) translateX(60px);
+    border-radius: 12px;
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .header-menu-toggle {
+    display: flex !important;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .floating-hamburger {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .main-content-wrapper.sidebar-open {
+    transform: scale(0.85) translateX(40px);
+    border-radius: 10px;
+  }
+}
 /* ============================================
    DASHBOARD - STATS CARDS
    ============================================ */
@@ -6355,3 +6519,4 @@ input[type="file"]::-webkit-file-upload-button:hover {
     font-size: 11px;
   }
 }
+
